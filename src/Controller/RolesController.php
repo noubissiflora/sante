@@ -34,7 +34,7 @@ class RolesController extends AppController
     public function view($id = null)
     {
         $role = $this->Roles->get($id, [
-            'contain' => ['Patients']
+            'contain' => ['Users']
         ]);
 
         $this->set('role', $role);

@@ -40,7 +40,7 @@ class RolesTable extends Table
 
         $this->addBehavior('Timestamp');
 
-        $this->hasMany('Patients', [
+        $this->hasMany('Users', [
             'foreignKey' => 'role_id'
         ]);
     }

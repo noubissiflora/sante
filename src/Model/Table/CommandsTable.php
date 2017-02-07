@@ -9,7 +9,7 @@ use Cake\Validation\Validator;
 /**
  * Commands Model
  *
- * @property \Cake\ORM\Association\BelongsTo $Patients
+ * @property \Cake\ORM\Association\BelongsTo $Users
  * @property \Cake\ORM\Association\BelongsTo $Pharmacies
  * @property \Cake\ORM\Association\HasMany $Contributions
  *
@@ -42,8 +42,8 @@ class CommandsTable extends Table
 
         $this->addBehavior('Timestamp');
 
-        $this->belongsTo('Patients', [
-            'foreignKey' => 'patient_id',
+        $this->belongsTo('Users', [
+            'foreignKey' => 'user_id',
             'joinType' => 'INNER'
         ]);
         $this->belongsTo('Pharmacies', [
@@ -89,7 +89,7 @@ class CommandsTable extends Table
      */
     public function buildRules(RulesChecker $rules)
     {
-        $rules->add($rules->existsIn(['patient_id'], 'Patients'));
+        $rules->add($rules->existsIn(['user_id'], 'Users'));
         $rules->add($rules->existsIn(['pharmacy_id'], 'Pharmacies'));
 
         return $rules;

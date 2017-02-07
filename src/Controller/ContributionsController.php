@@ -19,7 +19,7 @@ class ContributionsController extends AppController
     public function index()
     {
         $this->paginate = [
-            'contain' => ['Patients', 'Commands']
+            'contain' => ['Users', 'Commands']
         ];
         $contributions = $this->paginate($this->Contributions);
 
@@ -37,7 +37,7 @@ class ContributionsController extends AppController
     public function view($id = null)
     {
         $contribution = $this->Contributions->get($id, [
-            'contain' => ['Patients', 'Commands']
+            'contain' => ['Users', 'Commands']
         ]);
 
         $this->set('contribution', $contribution);
@@ -61,9 +61,9 @@ class ContributionsController extends AppController
             }
             $this->Flash->error(__('The contribution could not be saved. Please, try again.'));
         }
-        $patients = $this->Contributions->Patients->find('list', ['limit' => 200]);
+        $users = $this->Contributions->Users->find('list', ['limit' => 200]);
         $commands = $this->Contributions->Commands->find('list', ['limit' => 200]);
-        $this->set(compact('contribution', 'patients', 'commands'));
+        $this->set(compact('contribution', 'users', 'commands'));
         $this->set('_serialize', ['contribution']);
     }
 
@@ -88,9 +88,9 @@ class ContributionsController extends AppController
             }
             $this->Flash->error(__('The contribution could not be saved. Please, try again.'));
         }
-        $patients = $this->Contributions->Patients->find('list', ['limit' => 200]);
+        $users = $this->Contributions->Users->find('list', ['limit' => 200]);
         $commands = $this->Contributions->Commands->find('list', ['limit' => 200]);
-        $this->set(compact('contribution', 'patients', 'commands'));
+        $this->set(compact('contribution', 'users', 'commands'));
         $this->set('_serialize', ['contribution']);
     }
 

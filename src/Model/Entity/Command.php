@@ -7,7 +7,7 @@ use Cake\ORM\Entity;
  * Command Entity
  *
  * @property int $id
- * @property int $patient_id
+ * @property int $user_id
  * @property int $pharmacy_id
  * @property float $amount
  * @property string $status
@@ -15,7 +15,7 @@ use Cake\ORM\Entity;
  * @property \Cake\I18n\Time $created
  * @property \Cake\I18n\Time $modified
  *
- * @property \App\Model\Entity\Patient $patient
+ * @property \App\Model\Entity\User $user
  * @property \App\Model\Entity\Pharmacy $pharmacy
  * @property \App\Model\Entity\Contribution[] $contributions
  */

@@ -1,21 +1,25 @@
 <?php
 namespace App\Model\Entity;
-
-use Cake\ORM\Entity;
 use Cake\Auth\DefaultPasswordHasher;
+use Cake\ORM\Entity;
 
 /**
  * User Entity
  *
  * @property int $id
- * @property int $patient_id
- * @property string $login
+ * @property int $role_id
+ * @property string $name
+ * @property string $surname
+ * @property string $phone
  * @property string $password
- * @property string $status
+ * @property string $country
  * @property \Cake\I18n\Time $created
  * @property \Cake\I18n\Time $modified
+ * @property string $mail
  *
- * @property \App\Model\Entity\Patient $patient
+ * @property \App\Model\Entity\Role $role
+ * @property \App\Model\Entity\Command[] $commands
+ * @property \App\Model\Entity\Contribution[] $contributions
  */
 class User extends Entity
 {
@@ -48,5 +52,4 @@ class User extends Entity
         $hasher = new DefaultPasswordHasher();
         return $hasher->hash($value);
     }
-
 }

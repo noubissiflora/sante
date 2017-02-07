@@ -9,7 +9,9 @@ use Cake\Validation\Validator;
 /**
  * Users Model
  *
- * @property \Cake\ORM\Association\BelongsTo $Patients
+ * @property \Cake\ORM\Association\BelongsTo $Roles
+ * @property \Cake\ORM\Association\HasMany $Commands
+ * @property \Cake\ORM\Association\HasMany $Contributions
  *
  * @method \App\Model\Entity\User get($primaryKey, $options = [])
  * @method \App\Model\Entity\User newEntity($data = null, array $options = [])
@@ -35,14 +37,19 @@ class UsersTable extends Table
         parent::initialize($config);
 
         $this->table('users');
-        $this->displayField('id');
+        $this->displayField('name');
         $this->primaryKey('id');
 
         $this->addBehavior('Timestamp');
 
-        $this->belongsTo('Patients', [
-            'foreignKey' => 'patient_id',
-            'joinType' => 'INNER'
+        $this->belongsTo('Roles', [
+            'foreignKey' => 'role_id'
+        ]);
+        $this->hasMany('Commands', [
+            'foreignKey' => 'user_id'
+        ]);
+        $this->hasMany('Contributions', [
+            'foreignKey' => 'user_id'
         ]);
     }
 
@@ -59,14 +66,26 @@ class UsersTable extends Table
             ->allowEmpty('id', 'create');
 
         $validator
-            ->allowEmpty('login');
+            ->requirePresence('name', 'create')
+            ->notEmpty('name');
 
         $validator
-            ->requirePresence('password', 'create')
-            ->notEmpty('password');
+            ->requirePresence('surname', 'create')
+            ->notEmpty('surname');
 
         $validator
-            ->allowEmpty('status');
+            ->requirePresence('phone', 'create')
+            ->notEmpty('phone');
+
+        $validator
+            ->allowEmpty('password');
+
+        $validator
+            ->requirePresence('country', 'create')
+            ->notEmpty('country');
+
+        $validator
+            ->allowEmpty('mail');
 
         return $validator;
     }
@@ -80,8 +99,7 @@ class UsersTable extends Table
      */
     public function buildRules(RulesChecker $rules)
     {
-        $rules->add($rules->isUnique(['login']));
-        $rules->add($rules->existsIn(['patient_id'], 'Patients'));
+        $rules->add($rules->existsIn(['role_id'], 'Roles'));
 
         return $rules;
     }

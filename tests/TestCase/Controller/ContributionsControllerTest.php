@@ -17,11 +17,11 @@ class ContributionsControllerTest extends IntegrationTestCase
      */
     public $fixtures = [
         'app.contributions',
-        'app.patients',
+        'app.users',
         'app.roles',
+        'app.patients',
         'app.commands',
-        'app.pharmacies',
-        'app.users'
+        'app.pharmacies'
     ];
 
     /**

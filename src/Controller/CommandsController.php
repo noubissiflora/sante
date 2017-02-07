@@ -19,10 +19,10 @@ class CommandsController extends AppController
     public function index()
     {
         $this->paginate = [
-            'contain' => ['Patients', 'Pharmacies'],
-             'conditions' => [
-            'Commands.patient_id' => $this->Auth->user('patient_id'),
-        ]
+            'contain' => ['Users', 'Pharmacies'],
+            'conditions' => [
+            'Commands.user_id' => $this->Auth->user('id'),
+             ]
         ];
         $commands = $this->paginate($this->Commands);
 
@@ -40,7 +40,7 @@ class CommandsController extends AppController
     public function view($id = null)
     {
         $command = $this->Commands->get($id, [
-            'contain' => ['Patients', 'Pharmacies', 'Contributions']
+            'contain' => ['Users', 'Pharmacies', 'Contributions']
         ]);
 
         $this->set('command', $command);
@@ -64,9 +64,9 @@ class CommandsController extends AppController
             }
             $this->Flash->error(__('The command could not be saved. Please, try again.'));
         }
-        $patients = $this->Commands->Patients->find('list', ['limit' => 200]);
+        $users = $this->Commands->Users->find('list', ['limit' => 200]);
         $pharmacies = $this->Commands->Pharmacies->find('list', ['limit' => 200]);
-        $this->set(compact('command', 'patients', 'pharmacies'));
+        $this->set(compact('command', 'users', 'pharmacies'));
         $this->set('_serialize', ['command']);
     }
 
@@ -82,8 +82,7 @@ class CommandsController extends AppController
         $command = $this->Commands->get($id, [
             'contain' => []
         ]);
-        $patient_id= $command->patient_id;
-        $pharmacy_id= $command->pharmacy_id;
+        $pharmacy_id = $command->pharmacy_id ;
         if ($this->request->is(['patch', 'post', 'put'])) {
             $command = $this->Commands->patchEntity($command, $this->request->data);
             if ($this->Commands->save($command)) {
@@ -93,9 +92,9 @@ class CommandsController extends AppController
             }
             $this->Flash->error(__('The command could not be saved. Please, try again.'));
         }
-        $patients = $this->Commands->Patients->find('list', ['limit' => 200])->where(['id' => $patient_id]);
+        $users = $this->Commands->Users->find('list', ['limit' => 200])->where(['id' => $this->Auth->user('id')]);
         $pharmacies = $this->Commands->Pharmacies->find('list', ['limit' => 200])->where(['id' => $pharmacy_id]);
-        $this->set(compact('command', 'patients', 'pharmacies'));
+        $this->set(compact('command', 'users', 'pharmacies'));
         $this->set('_serialize', ['command']);
     }
 
@@ -118,13 +117,4 @@ class CommandsController extends AppController
 
         return $this->redirect(['action' => 'index']);
     }
-
-    public function initialize()
-{
-    parent::initialize();
-    // Ajoute logout à la liste des actions autorisées.
-    $this->Auth->allow(['index', 'add']);
-}
-
-
 }

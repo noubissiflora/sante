@@ -9,7 +9,7 @@ use Cake\Validation\Validator;
 /**
  * Contributions Model
  *
- * @property \Cake\ORM\Association\BelongsTo $Patients
+ * @property \Cake\ORM\Association\BelongsTo $Users
  * @property \Cake\ORM\Association\BelongsTo $Commands
  *
  * @method \App\Model\Entity\Contribution get($primaryKey, $options = [])
@@ -41,8 +41,8 @@ class ContributionsTable extends Table
 
         $this->addBehavior('Timestamp');
 
-        $this->belongsTo('Patients', [
-            'foreignKey' => 'patient_id',
+        $this->belongsTo('Users', [
+            'foreignKey' => 'user_id',
             'joinType' => 'INNER'
         ]);
         $this->belongsTo('Commands', [
@@ -85,7 +85,7 @@ class ContributionsTable extends Table
      */
     public function buildRules(RulesChecker $rules)
     {
-        $rules->add($rules->existsIn(['patient_id'], 'Patients'));
+        $rules->add($rules->existsIn(['user_id'], 'Users'));
         $rules->add($rules->existsIn(['command_id'], 'Commands'));
 
         return $rules;

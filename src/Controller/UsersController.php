@@ -19,7 +19,7 @@ class UsersController extends AppController
     public function index()
     {
         $this->paginate = [
-            'contain' => ['Patients']
+            'contain' => ['Roles']
         ];
         $users = $this->paginate($this->Users);
 
@@ -37,7 +37,7 @@ class UsersController extends AppController
     public function view($id = null)
     {
         $user = $this->Users->get($id, [
-            'contain' => ['Patients']
+            'contain' => ['Roles', 'Commands', 'Contributions']
         ]);
 
         $this->set('user', $user);
@@ -49,25 +49,20 @@ class UsersController extends AppController
      *
      * @return \Cake\Network\Response|null Redirects on successful add, renders view otherwise.
      */
-    public function add($patient_id = 1, $command_id = 1)
+    public function add()
     {
         $user = $this->Users->newEntity();
         if ($this->request->is('post')) {
             $user = $this->Users->patchEntity($user, $this->request->data);
-            $user->patient_id=$patient_id;
             if ($this->Users->save($user)) {
                 $this->Flash->success(__('The user has been saved.'));
-                return  $this->redirect(['controller' => 'Commands', 'action' => 'view', $command_id]); 
-                //$user = $this->Auth->identify();
-               // $this->Auth->setUser($user);
-                //    return $this->redirect(['controller' => 'Commands', 'action' => 'index'], $patient_id );
-                   
-               //return $this->redirect(['action' => 'index']);
+
+                return $this->redirect(['action' => 'index']);
             }
             $this->Flash->error(__('The user could not be saved. Please, try again.'));
         }
-        $patients = $this->Users->Patients->find('list', ['limit' => 200]);
-        $this->set(compact('user', 'patients'));
+        $roles = $this->Users->Roles->find('list', ['limit' => 200]);
+        $this->set(compact('user', 'roles'));
         $this->set('_serialize', ['user']);
     }
 
@@ -85,15 +80,16 @@ class UsersController extends AppController
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $user = $this->Users->patchEntity($user, $this->request->data);
+           
             if ($this->Users->save($user)) {
                 $this->Flash->success(__('The user has been saved.'));
-
-                return $this->redirect(['action' => 'index']);
+                return  $this->redirect(['action' => 'view', $this->Auth->user('id')]); 
+                //return $this->redirect(['action' => 'index']);
             }
             $this->Flash->error(__('The user could not be saved. Please, try again.'));
         }
-        $patients = $this->Users->Patients->find('list', ['limit' => 200]);
-        $this->set(compact('user', 'patients'));
+        $roles = $this->Users->Roles->find('list', ['limit' => 200]);
+        $this->set(compact('user', 'roles'));
         $this->set('_serialize', ['user']);
     }
 
@@ -116,28 +112,26 @@ class UsersController extends AppController
 
         return $this->redirect(['action' => 'index']);
     }
-    
-	 public function login()
+
+     public function login()
      {
             
-			if ($this->request->is('post')) {    
+            if ($this->request->is('post')) {    
                 $user = $this->Auth->identify();
-				if ($user) {
-					$this->Auth->setUser($user);
-                    //return $this->redirect(['controller' => 'Commands','action' => 'view']);
-                    //return $this->redirect(['controller' => 'Commands', 'action' => 'index'], $user->patient_id);
-					return $this->redirect($this->Auth->redirectUrl());
-				}
-				$this->Flash->error('Votre username ou mot de passe est incorrect.');
-		}
+                if ($user) {
+                    $this->Auth->setUser($user);
+                    return $this->redirect($this->Auth->redirectUrl());
+                }
+                $this->Flash->error('Votre username ou mot de passe est incorrect.');
+        }
          $this->set(compact('phone'));
-	}
+    }
 
     public function initialize()
     {
         parent::initialize();
         // Ajoute logout à la liste des actions autorisées.
-        $this->Auth->allow(['logout', 'add', 'index']);
+        $this->Auth->allow(['logout', 'edit']);
     }
 
 

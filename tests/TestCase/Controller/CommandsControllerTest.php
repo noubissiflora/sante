@@ -17,10 +17,10 @@ class CommandsControllerTest extends IntegrationTestCase
      */
     public $fixtures = [
         'app.commands',
-        'app.patients',
-        'app.roles',
-        'app.contributions',
         'app.users',
+        'app.roles',
+        'app.patients',
+        'app.contributions',
         'app.pharmacies'
     ];
 
