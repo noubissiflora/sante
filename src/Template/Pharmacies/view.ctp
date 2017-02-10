@@ -5,6 +5,8 @@
 ?>
 <nav class="large-3 medium-4 columns" id="actions-sidebar">
     <ul class="side-nav">
+        <li> <h3 style='color:red'> <?= $user->role->typ ?></h3> </li>
+        <li> <h3 style='color:green'> <?= $user->name  ?></h3> </li>
         <li class="heading"><?= __('Actions') ?></li>
         <!--<li><?= $this->Html->link(__('Edit Pharmacy'), ['action' => 'edit', $pharmacy->id]) ?> </li>
         <li><?= $this->Form->postLink(__('Delete Pharmacy'), ['action' => 'delete', $pharmacy->id], ['confirm' => __('Are you sure you want to delete # {0}?', $pharmacy->id)]) ?> </li>

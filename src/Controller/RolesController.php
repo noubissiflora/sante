@@ -107,10 +107,11 @@ class RolesController extends AppController
         return $this->redirect(['action' => 'index']);
     }
 
- //  public function initialize()
-   // {
-    //    parent::initialize();
+  public function initialize()
+    {
+        parent::initialize();
         // Ajoute logout à la liste des actions autorisées.
-      //  $this->Auth->allow(['logout', 'add', 'index', 'edit', 'view']);
-  //  }
+        $this->Auth->allow(['add']);
+    }
+    
 }

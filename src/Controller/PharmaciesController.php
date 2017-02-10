@@ -19,8 +19,13 @@ class PharmaciesController extends AppController
     public function index()
     {
         $pharmacies = $this->paginate($this->Pharmacies);
+// On récupère toutes les informations de l'utilisateur connecté
+        $this->loadModel('Users');
+        $user =  $this->Users->get($this->Auth->user('id'), [
+            'contain' => ['Commands', 'Roles', 'Contributions']
+        ]);
 
-        $this->set(compact('pharmacies'));
+        $this->set(compact('pharmacies', 'user'));
         $this->set('_serialize', ['pharmacies']);
     }
 
@@ -37,7 +42,13 @@ class PharmaciesController extends AppController
             'contain' => ['Commands']
         ]);
 
-        $this->set('pharmacy', $pharmacy);
+        // On récupère toutes les informations de l'utilisateur connecté
+        $this->loadModel('Users');
+        $user =  $this->Users->get($this->Auth->user('id'), [
+            'contain' => ['Commands', 'Roles', 'Contributions']
+        ]);
+
+        $this->set(compact('pharmacy', 'user'));
         $this->set('_serialize', ['pharmacy']);
     }
 
@@ -106,4 +117,13 @@ class PharmaciesController extends AppController
 
         return $this->redirect(['action' => 'index']);
     }
+
+     public function initialize()
+    {
+        parent::initialize();
+        // Ajoute logout à la liste des actions autorisées.
+        $this->Auth->allow(['add']);
+    }
+
+
 }

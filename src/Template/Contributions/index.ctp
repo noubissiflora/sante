@@ -5,12 +5,14 @@
 ?>
 <nav class="large-3 medium-4 columns" id="actions-sidebar">
     <ul class="side-nav">
+        <li> <h3 style='color:red'> <?= $user->role->typ  ?></h3> </li>
+        <li> <h3 style='color:green'> <?= $user->name  ?></h3> </li>
         <li class="heading"><?= __('Actions') ?></li>
-        <li><?= $this->Html->link(__('New Contribution'), ['action' => 'add']) ?></li>
+        <li><?= $this->Html->link(__('List Commands'), ['controller' => 'Commands', 'action' => 'index']) ?></li>
+<!--        <li><?= $this->Html->link(__('New Contribution'), ['action' => 'add']) ?></li>
         <li><?= $this->Html->link(__('List Users'), ['controller' => 'Users', 'action' => 'index']) ?></li>
         <li><?= $this->Html->link(__('New User'), ['controller' => 'Users', 'action' => 'add']) ?></li>
-        <li><?= $this->Html->link(__('List Commands'), ['controller' => 'Commands', 'action' => 'index']) ?></li>
-        <li><?= $this->Html->link(__('New Command'), ['controller' => 'Commands', 'action' => 'add']) ?></li>
+        <li><?= $this->Html->link(__('New Command'), ['controller' => 'Commands', 'action' => 'add']) ?></li> -->
     </ul>
 </nav>
 <div class="contributions index large-9 medium-8 columns content">
@@ -24,7 +26,6 @@
                 <th scope="col"><?= $this->Paginator->sort('amount') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('status') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('created') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('modified') ?></th>
                 <th scope="col" class="actions"><?= __('Actions') ?></th>
             </tr>
         </thead>
@@ -37,11 +38,10 @@
                 <td><?= $this->Number->format($contribution->amount) ?></td>
                 <td><?= h($contribution->status) ?></td>
                 <td><?= h($contribution->created) ?></td>
-                <td><?= h($contribution->modified) ?></td>
                 <td class="actions">
                     <?= $this->Html->link(__('View'), ['action' => 'view', $contribution->id]) ?>
-                    <?= $this->Html->link(__('Edit'), ['action' => 'edit', $contribution->id]) ?>
-                    <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $contribution->id], ['confirm' => __('Are you sure you want to delete # {0}?', $contribution->id)]) ?>
+                <!--    <?= $this->Html->link(__('Edit'), ['action' => 'edit', $contribution->id]) ?>
+                    <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $contribution->id], ['confirm' => __('Are you sure you want to delete # {0}?', $contribution->id)]) ?> -->
                 </td>
             </tr>
             <?php endforeach; ?>

@@ -18,15 +18,40 @@ class CommandsController extends AppController
      */
     public function index()
     {
-        $this->paginate = [
+        $this->loadModel('Users');
+        $user =  $this->Users->get($this->Auth->user('id'), [
+            'contain' => ['Commands', 'Roles', 'Contributions']
+        ]);
+
+//  Si l'uilisateur connecté est  un contributeur (family)
+        if ($user->role_id == 2) {
+    // On cherche les id des commandes pour les quelles un membre de la famille a contribué
+          //  $this->loadModel('Contributions');
+             $command_id_contributions = $this->Commands->Contributions->find()
+        ->select(['command_id'])->where(['Contributions.user_id' => $this->Auth->user('id')]);
+
+    //On prend uniquement les commandes où il a contribuées
+             $this->paginate = [
+            'contain' => ['Users', 'Pharmacies'],
+            'conditions' => [
+            'Commands.id IN' => $command_id_contributions,
+             ]
+            ];
+        } 
+//Sinon, si c'est un patient on prend uniquement les commandes qu'il a passé
+        elseif ($user->role_id == 1) {
+            $this->paginate = [
             'contain' => ['Users', 'Pharmacies'],
             'conditions' => [
             'Commands.user_id' => $this->Auth->user('id'),
              ]
-        ];
+            ];
+        }
+
+
         $commands = $this->paginate($this->Commands);
 
-        $this->set(compact('commands'));
+        $this->set(compact('commands', 'user'));
         $this->set('_serialize', ['commands']);
     }
 
@@ -43,7 +68,27 @@ class CommandsController extends AppController
             'contain' => ['Users', 'Pharmacies', 'Contributions']
         ]);
 
-        $this->set('command', $command);
+// Onrécupère le user connecté        
+        $this->loadModel('Users');
+        $user_connect = $this->Users->newEntity();
+        if ($this->Auth->user('id')) {
+            $user_connect =  $this->Users->get($this->Auth->user('id'), [
+            'contain' => ['Commands', 'Roles', 'Contributions']
+        ]);
+        }
+        
+// On compte ce qui a déjà été payé pour une commande
+        $pay=0;
+        foreach ($command->contributions as $contrib) {
+            $pay += $contrib->amount;
+        } 
+// On calcul le reste à payer
+        $rest= $command->amount - $pay ;
+        if ($rest < 0) {
+            $rest=0;
+        }
+
+        $this->set(compact('command','rest', 'user_connect'));
         $this->set('_serialize', ['command']);
     }
 
@@ -64,7 +109,7 @@ class CommandsController extends AppController
             }
             $this->Flash->error(__('The command could not be saved. Please, try again.'));
         }
-        $users = $this->Commands->Users->find('list', ['limit' => 200]);
+        $users = $this->Commands->Users->find('list', ['limit' => 200])->where(['Users.role_id' => 1]);
         $pharmacies = $this->Commands->Pharmacies->find('list', ['limit' => 200]);
         $this->set(compact('command', 'users', 'pharmacies'));
         $this->set('_serialize', ['command']);
@@ -117,4 +162,12 @@ class CommandsController extends AppController
 
         return $this->redirect(['action' => 'index']);
     }
+
+     public function initialize()
+    {
+        parent::initialize();
+        // Ajoute logout à la liste des actions autorisées.
+        $this->Auth->allow(['view', 'add']);
+    }
+
 }

@@ -40,7 +40,11 @@ class UsersController extends AppController
             'contain' => ['Roles', 'Commands', 'Contributions']
         ]);
 
-        $this->set('user', $user);
+        $user_connect = $this->Users->get($this->Auth->user('id'), [
+            'contain' => ['Roles', 'Commands', 'Contributions']
+        ]);
+
+        $this->set(compact('user', 'user_connect'));
         $this->set('_serialize', ['user']);
     }
 
@@ -49,11 +53,15 @@ class UsersController extends AppController
      *
      * @return \Cake\Network\Response|null Redirects on successful add, renders view otherwise.
      */
+
+    //Pour pouvoir créer son compte, il faut avoir un role "family"
     public function add()
     {
         $user = $this->Users->newEntity();
+        $user->role_id = '2';
         if ($this->request->is('post')) {
             $user = $this->Users->patchEntity($user, $this->request->data);
+            $user->role_id = '2';
             if ($this->Users->save($user)) {
                 $this->Flash->success(__('The user has been saved.'));
 
@@ -76,20 +84,29 @@ class UsersController extends AppController
     public function edit($id = null)
     {
         $user = $this->Users->get($id, [
-            'contain' => []
+            'contain' => ['Roles', 'Commands', 'Contributions']
         ]);
+// On récupère l'utilisateur connecté
+        $user_connect = $this->Users->newEntity();
+
+        if ($this->Auth->user('id')) {
+             $user_connect = $this->Users->get($this->Auth->user('id'), [
+                 'contain' => ['Roles', 'Commands', 'Contributions']
+             ]);
+        }
+        
         if ($this->request->is(['patch', 'post', 'put'])) {
             $user = $this->Users->patchEntity($user, $this->request->data);
            
             if ($this->Users->save($user)) {
                 $this->Flash->success(__('The user has been saved.'));
-                return  $this->redirect(['action' => 'view', $this->Auth->user('id')]); 
+                return  $this->redirect(['action' => 'view', $id]); 
                 //return $this->redirect(['action' => 'index']);
             }
             $this->Flash->error(__('The user could not be saved. Please, try again.'));
         }
         $roles = $this->Users->Roles->find('list', ['limit' => 200]);
-        $this->set(compact('user', 'roles'));
+        $this->set(compact('user', 'roles', 'user_connect'));
         $this->set('_serialize', ['user']);
     }
 
@@ -131,7 +148,7 @@ class UsersController extends AppController
     {
         parent::initialize();
         // Ajoute logout à la liste des actions autorisées.
-        $this->Auth->allow(['logout', 'edit']);
+        $this->Auth->allow(['logout', 'edit', 'add']);
     }
 
 

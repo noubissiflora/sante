@@ -65,8 +65,8 @@ class ContributionsTable extends Table
 
         $validator
             ->numeric('amount')
-            ->allowEmpty('amount');
-
+            ->notEmpty('amount');
+            
         $validator
             ->allowEmpty('status');
 

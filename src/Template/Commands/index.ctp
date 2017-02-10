@@ -7,6 +7,8 @@
 
 <nav class="large-3 medium-4 columns" id="actions-sidebar">
     <ul class="side-nav">
+        <li> <h3 style='color:red'> <?= $user->role->typ ?></h3> </li>
+        <li> <h3 style='color:green'> <?= $user->name  ?></h3> </li>
         <li class="heading"><?= __('Actions') ?></li>
         <li><?= $this->Html->link(__('List Pharmacies'), ['controller' => 'Pharmacies', 'action' => 'index']) ?></li>
         <!--
